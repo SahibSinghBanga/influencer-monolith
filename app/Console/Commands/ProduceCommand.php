@@ -13,7 +13,11 @@ class ProduceCommand extends Command
     public function handle()
     {
         $order = Order::find(1);
+
+        $array = $order->toArray();
+
+        $array['ambassador_revenue'] = $order->ambassador_revenue;
         
-        OrderCompleted::dispatch($order->toArray());
+        OrderCompleted::dispatch($array)->onQueue('email_topic');
     }
 }

@@ -8,6 +8,7 @@
     ],
     "license": "MIT",
     "require": {
+        "sahibsinghbanga/kafka-queue": "dev-main",
         "php": "^7.4|^8.0",
         "cartalyst/stripe": "^2.4",
         "fideloper/proxy": "^4.4",
@@ -27,6 +28,12 @@
         "nunomaduro/collision": "^5.0",
         "phpunit/phpunit": "^9.3.3"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/sahibsinghbanga/kafka-queue.git"
+        }
+    ],
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
@@ -41,7 +48,8 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "Kafka\\": "vendor/sahibsinghbanga/kafka-queue/src/"
         }
     },
     "autoload-dev": {

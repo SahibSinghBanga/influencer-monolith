@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\OrderCompletedEvent;
 use App\Http\Resources\OrderResource;
+use App\Jobs\OrderCompleted;
 use App\Models\Link;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -104,7 +105,10 @@ class OrderController extends Controller
         $order->complete = 1;
         $order->save();
 
-        // event(new OrderCompletedEvent($order));
+        $array = $order->toArray();
+        $array['ambassador_revenue'] = $order->ambassador_revenue;
+
+        OrderCompleted::dispatch($array)->onQueue('email_topic');
 
         return [
             'message' => 'success'
