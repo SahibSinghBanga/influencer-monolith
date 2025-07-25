@@ -36,7 +36,6 @@ function common(string $scope)
 //Admin
 Route::prefix('admin')->group(function () {
     common('scope.admin');
-
     Route::middleware(['auth:sanctum', 'scope.admin'])->group(function () {
         Route::get('ambassadors', [AmbassadorController::class, 'index']);
         Route::get('users/{id}/links', [LinkController::class, 'index']);
