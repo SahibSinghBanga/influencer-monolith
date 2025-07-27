@@ -9,11 +9,19 @@ use App\Models\Link;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Services\UserService;
 use Cartalyst\Stripe\Stripe;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    public UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function index()
     {
         return OrderResource::collection(Order::with('orderItems')->get());
@@ -25,14 +33,16 @@ class OrderController extends Controller
             abort(400, 'Invalid code');
         }
 
+        $user = $this->userService->get("users/{$link->user_id}");
+
         try {
             \DB::beginTransaction();
 
             $order = new Order();
 
             $order->code = $link->code;
-            $order->user_id = $link->user->id;
-            $order->ambassador_email = $link->user->email;
+            $order->user_id = $link->user_id;
+            $order->ambassador_email = $user['email'];
             $order->first_name = $request->input('first_name');
             $order->last_name = $request->input('last_name');
             $order->email = $request->input('email');

@@ -41,12 +41,13 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereZip($value)
- * @mixin \Eloquent
  * @property-read mixed $admin_revenue
  * @property-read mixed $name
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\OrderItem[] $orderItems
  * @property-read int|null $order_items_count
  * @property-read mixed $ambassador_revenue
+ * @method static \Database\Factories\OrderFactory factory(...$parameters)
+ * @mixin \Eloquent
  */
 class Order extends Model
 {

@@ -4,17 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Link;
 use App\Models\Order;
-use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 
 class StatsController extends Controller
 {
+    public UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function index(Request $request)
     {
-        $user = $request->user();
+        $user = $this->userService->get('user');
 
-        $links = Link::where('user_id', $user->id)->get();
+        $links = Link::where('user_id', $user['id'])->get();
 
         return $links->map(function (Link $link) {
             $orders = Order::where('code', $link->code)->where('complete', 1)->get();
@@ -31,4 +38,6 @@ class StatsController extends Controller
     {
         return Redis::zrevrange('rankings', 0, -1, 'WITHSCORES');
     }
+
+
 }
