@@ -12,15 +12,20 @@ abstract class ApiService
 
     public function request($method, $path, $data = [])
     {
-        $response = Http::acceptJson()->withHeaders([
-            'Authorization' => 'Bearer ' . request()->cookie('jwt')
-        ])->$method("{$this->endpoint}/{$path}", $data);
+        $response = $this->getRequest($method, $path, $data);
 
         if ($response->ok()) {
             return $response->json();
         }
 
         throw new HttpException($response->status(), $response->body());
+    }
+
+    public function getRequest($method, $path, $data = [])
+    {
+        return Http::acceptJson()->withHeaders([
+            'Authorization' => 'Bearer ' . request()->cookie('jwt')
+        ])->$method("{$this->endpoint}/{$path}", $data);
     }
 
     public function post($path, $data)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\UserService;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,9 @@ class ScopeAdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->user()->tokenCan('admin')) {
+        $response = (new UserService)->getRequest('get', 'scope/admin');
+
+        if (!$response->ok()) {
             abort(401, 'unauthorized');
         }
 
