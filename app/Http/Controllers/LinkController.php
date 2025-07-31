@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\LinkResource;
+use App\Jobs\LinkCreated;
 use App\Models\Link;
 use App\Models\LinkProduct;
 use App\Services\UserService;
@@ -34,23 +35,21 @@ class LinkController extends Controller
             'code' => Str::random(6)
         ]);
 
+        $linkProducts = [];
+
         foreach ($request->input('products') as $product_id) {
-            LinkProduct::create([
+            $linkProduct = LinkProduct::create([
                 'link_id' => $link->id,
                 'product_id' => $product_id
             ]);
+
+            $linkProduct[] = $linkProduct->toArray();
         }
 
-        return $link;
-    }
+        $array = $link->toArray();
+        $array['link_products'] = $linkProducts;
 
-    public function show($code)
-    {
-        $link = Link::with('products')->where('code', $code)->first();
-
-        $user = $this->userService->get("users/{$link->user_id}");
-
-        $link['user'] = $user;
+        LinkCreated::dispatch($array)->onQueue('checkout_topic');
 
         return $link;
     }
